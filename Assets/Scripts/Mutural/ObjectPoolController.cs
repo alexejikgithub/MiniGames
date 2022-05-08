@@ -10,7 +10,7 @@ namespace Minigames
 		[SerializeField] private int _amountToPool;
 
 		private GameObject _currentElement;
-
+		
 
 		private void Start()
 		{
@@ -23,9 +23,6 @@ namespace Minigames
 				_pooledObjects.Add(_currentElement);
 			}
 		}
-
-
-
 
 
 		public GameObject GetPooledGameObject()
@@ -49,8 +46,8 @@ namespace Minigames
 		{
 			item.SetActive(false);
 			_pooledObjects.Add(item);
-
 		}
 
+		
 	}
 }
