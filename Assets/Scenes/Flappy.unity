@@ -587,7 +587,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spawnInterval: 3
-  _hightthreshold: 0.5
+  _movementSpeed: 1
+  _hightthreshold: 0.3
   _pool: {fileID: 1804151201}
   _spawnPosition: {fileID: 35024826}
   _upperLimit: {fileID: 1800363801}

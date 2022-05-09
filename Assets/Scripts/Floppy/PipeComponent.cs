@@ -6,7 +6,7 @@ namespace Minigames.Pipes
 	public class PipeComponent : MonoBehaviour
 	{
 
-		[SerializeField] private float _movementSpeed;
+		
 		[SerializeField] private Transform _upperPipe;
 		[SerializeField] private Transform _lowerPipe;
 
@@ -14,6 +14,8 @@ namespace Minigames.Pipes
 		public Transform LowerPipe => _lowerPipe;
 
 		private ObjectPoolController _pool;
+
+		private float _movementSpeed;
 
 		private void Update()
 		{
@@ -27,6 +29,10 @@ namespace Minigames.Pipes
 		public void SetPool(ObjectPoolController pool)
 		{
 			_pool = pool;
+		}
+		public void SetSpeed(float speed)
+		{
+			_movementSpeed = speed;
 		}
 
 		public void RemovePipe()

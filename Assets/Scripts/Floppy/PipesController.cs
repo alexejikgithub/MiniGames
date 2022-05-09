@@ -5,10 +5,11 @@ using UnityEngine;
 
 namespace Minigames.Pipes
 {
-    public class PipesController : MonoBehaviour
-    {
+	public class PipesController : MonoBehaviour
+	{
 
 		[SerializeField] private float _spawnInterval;
+		[SerializeField] private float _movementSpeed;
 		[SerializeField] private float _hightthreshold;
 		[SerializeField] private ObjectPoolController _pool;
 		[SerializeField] private Transform _spawnPosition;
@@ -17,9 +18,13 @@ namespace Minigames.Pipes
 
 		private bool _isSpawning;
 
+		private float _upperY;
+		private float _lowerY;
+		private bool _isYDefined = false;
+
 		private void Awake()
 		{
-			
+
 		}
 		private void Start()
 		{
@@ -32,31 +37,41 @@ namespace Minigames.Pipes
 			Transform pipe = _pool.GetPooledGameObject().transform;
 			PipeComponent pipeComponent = pipe.GetComponent<PipeComponent>();
 
-			if(pipeComponent!=null)
+			if (pipeComponent != null)
 			{
-				
+				pipeComponent.SetSpeed(_movementSpeed);
 				pipeComponent.SetPool(_pool);
 
-				// TODO Fix
-				float yPos = Random.Range(_lowerLimit.position.y + pipeComponent.LowerPipe.transform.position.y + _hightthreshold, _upperLimit.position.y + pipeComponent.UpperPipe.transform.position.y - _hightthreshold);
-
-				pipe.position = new Vector3(_spawnPosition.position.x, yPos, 0) ;
+				SetPipePosition(pipeComponent, pipe);
 			}
-			
-
-			
 
 			return pipe;
 		}
 
 		private IEnumerator SpawnPipesCoroutine()
 		{
-			
-			while(_isSpawning)
+
+			while (_isSpawning)
 			{
 				SpawnTube();
 				yield return new WaitForSeconds(_spawnInterval);
 			}
+		}
+
+		private void SetPipePosition(PipeComponent pipeComponent, Transform pipe)
+		{
+
+			if (!_isYDefined)
+			{
+				_upperY = _upperLimit.position.y - (pipeComponent.UpperPipe.transform.position.y - pipeComponent.UpperPipe.transform.localScale.y / 2);
+				_lowerY = _lowerLimit.position.y - (pipeComponent.LowerPipe.transform.position.y + pipeComponent.LowerPipe.transform.localScale.y / 2);
+				_isYDefined = true;
+			}
+			
+
+			float yPos = Random.Range(_lowerY + _hightthreshold, _upperY - _hightthreshold);
+
+			pipe.position = new Vector3(_spawnPosition.position.x, yPos, 0);
 		}
 	}
 }
