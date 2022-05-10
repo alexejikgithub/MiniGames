@@ -8,9 +8,8 @@ namespace Minigames.FlappyGhost
 	public class PipesController : MonoBehaviour
 	{
 
-		[SerializeField] private float _spawnInterval;
-		[SerializeField] private float _movementSpeed;
-		[SerializeField] private float _hightthreshold;
+
+
 		[SerializeField] private ObjectPoolController _pool;
 		[SerializeField] private Transform _spawnPosition;
 		[SerializeField] private Transform _upperLimit;
@@ -22,6 +21,13 @@ namespace Minigames.FlappyGhost
 		private float _lowerY;
 		private bool _isYDefined = false;
 
+		private float _spawnInterval;
+		private float _movementSpeed;
+		private float _hightThreshold;
+
+
+		private Coroutine _spawnPipesCoroutine;
+
 		public float MovementSpeed => _movementSpeed;
 
 		private void Awake()
@@ -30,8 +36,24 @@ namespace Minigames.FlappyGhost
 		}
 		private void Start()
 		{
+			
+			
+		}
+
+		public void StartSpawning(float interval, float speed, float threshold)
+		{
+			 _spawnInterval = interval;
+			 _movementSpeed= speed;
+			 _hightThreshold= threshold;
 			_isSpawning = true;
-			StartCoroutine(SpawnPipesCoroutine());
+			_spawnPipesCoroutine = StartCoroutine(SpawnPipesCoroutine());
+		}
+
+		public void StopSpawning()
+		{
+			_movementSpeed= 0;
+			StopCoroutine(_spawnPipesCoroutine);
+			_isSpawning = false;
 		}
 
 		public Transform SpawnTube()
@@ -69,9 +91,9 @@ namespace Minigames.FlappyGhost
 				_lowerY = _lowerLimit.position.y - (pipeComponent.LowerPipe.transform.position.y + pipeComponent.LowerPipe.transform.localScale.y / 2);
 				_isYDefined = true;
 			}
-			
 
-			float yPos = Random.Range(_lowerY + _hightthreshold, _upperY - _hightthreshold);
+
+			float yPos = Random.Range(_lowerY + _hightThreshold, _upperY - _hightThreshold);
 
 			pipe.position = new Vector3(_spawnPosition.position.x, yPos, 0);
 		}
