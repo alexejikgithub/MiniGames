@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Minigames.Pipes
+namespace Minigames.FlappyGhost
 {
 	public class PipeDestroyer : MonoBehaviour
 	{

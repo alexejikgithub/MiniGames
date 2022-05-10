@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Minigames.Pipes
+namespace Minigames.FlappyGhost
 {
 	public class PipesController : MonoBehaviour
 	{
@@ -16,11 +16,13 @@ namespace Minigames.Pipes
 		[SerializeField] private Transform _upperLimit;
 		[SerializeField] private Transform _lowerLimit;
 
-		private bool _isSpawning;
+		[SerializeField] private bool _isSpawning;
 
 		private float _upperY;
 		private float _lowerY;
 		private bool _isYDefined = false;
+
+		public float MovementSpeed => _movementSpeed;
 
 		private void Awake()
 		{
@@ -39,7 +41,7 @@ namespace Minigames.Pipes
 
 			if (pipeComponent != null)
 			{
-				pipeComponent.SetSpeed(_movementSpeed);
+				pipeComponent.SetPipesController(this);
 				pipeComponent.SetPool(_pool);
 
 				SetPipePosition(pipeComponent, pipe);

@@ -1,7 +1,8 @@
+
 using UnityEngine;
 using DG.Tweening;
 
-namespace Minigames.Pipes
+namespace Minigames.FlappyGhost
 {
 	public class PipeComponent : MonoBehaviour
 	{
@@ -15,7 +16,7 @@ namespace Minigames.Pipes
 
 		private ObjectPoolController _pool;
 
-		private float _movementSpeed;
+		private PipesController _controller;
 
 		private void Update()
 		{
@@ -23,16 +24,16 @@ namespace Minigames.Pipes
 		}
 		private void MoveLeft()
 		{
-			transform.Translate(Vector3.left * _movementSpeed * Time.deltaTime);
+			transform.Translate(Vector3.left * _controller.MovementSpeed * Time.deltaTime);
 		}
 
 		public void SetPool(ObjectPoolController pool)
 		{
 			_pool = pool;
 		}
-		public void SetSpeed(float speed)
+		public void SetPipesController(PipesController controller)
 		{
-			_movementSpeed = speed;
+			_controller = controller;
 		}
 
 		public void RemovePipe()
