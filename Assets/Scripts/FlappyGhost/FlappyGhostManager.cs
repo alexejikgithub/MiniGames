@@ -14,6 +14,7 @@ namespace Minigames.FlappyGhost
 		[Header("GameObjects")]
 		[SerializeField] private Ghost _ghost;
 		[SerializeField] private PipesController _pipesController;
+		[SerializeField] private BackgroundController _backgroundController;
 
 
 		private int _score;
@@ -26,6 +27,7 @@ namespace Minigames.FlappyGhost
 		private void Start()
 		{
 			_pipesController.StartSpawning(_spawnInterval, _movementSpeed, _hightthreshold);
+			_backgroundController.SetBackgroundSpeed(_movementSpeed);
 		}
 
 		private void AddScore()
@@ -37,6 +39,7 @@ namespace Minigames.FlappyGhost
 		private void GameOver()
 		{
 			_pipesController.StopSpawning();
+			_backgroundController.SetBackgroundSpeed(0f);
 		}
 
 		private void OnDestroy()
