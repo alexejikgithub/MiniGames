@@ -10,13 +10,17 @@ namespace Minigames.FlappyGhost
 		
 		[SerializeField] private Transform _upperPipe;
 		[SerializeField] private Transform _lowerPipe;
+		[SerializeField] private float _pipeHight;
 
 		public Transform UpperPipe => _upperPipe;
 		public Transform LowerPipe => _lowerPipe;
+		public float PipeHight => _pipeHight;
 
 		private ObjectPoolController _pool;
 
 		private PipesController _controller;
+
+
 
 		private void Update()
 		{

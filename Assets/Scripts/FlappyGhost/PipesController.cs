@@ -87,8 +87,8 @@ namespace Minigames.FlappyGhost
 
 			if (!_isYDefined)
 			{
-				_upperY = _upperLimit.position.y - (pipeComponent.UpperPipe.transform.position.y - pipeComponent.UpperPipe.transform.localScale.y / 2);
-				_lowerY = _lowerLimit.position.y - (pipeComponent.LowerPipe.transform.position.y + pipeComponent.LowerPipe.transform.localScale.y / 2);
+				_upperY = _upperLimit.position.y - (pipeComponent.UpperPipe.transform.position.y - pipeComponent.PipeHight / 2);
+				_lowerY = _lowerLimit.position.y - (pipeComponent.LowerPipe.transform.position.y + pipeComponent.PipeHight / 2);
 				_isYDefined = true;
 			}
 
