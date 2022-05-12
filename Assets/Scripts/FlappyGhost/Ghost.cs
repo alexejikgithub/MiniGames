@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 namespace Minigames.FlappyGhost
@@ -11,8 +11,11 @@ namespace Minigames.FlappyGhost
 		[SerializeField] private float _fallSpeed;
 		[SerializeField] private float _jumpDuration;
 		[SerializeField] private float _fallduration;
+		[SerializeField] private Vector3 _maxRotation;
+		[SerializeField] private Vector3 _minRotation;
 		[SerializeField] private Rigidbody2D _rigidBody;
 		[SerializeField] InteractableCanvasObject _input;
+		[SerializeField] CustomSpriteAnimation _animation;
 
 		private Coroutine _jumpCoroutine;
 		private Coroutine _fallCoroutine;
@@ -28,6 +31,7 @@ namespace Minigames.FlappyGhost
 		private void Start()
 		{
 			_fallCoroutine = StartCoroutine(FallCoroutine());
+			_animation.SetClip("Idle");
 
 		}
 		private void Update()
@@ -53,23 +57,50 @@ namespace Minigames.FlappyGhost
 			}
 			_rigidBody.velocity = Vector2.up * _jumpSpeed;
 
-			yield return new WaitForSeconds(_jumpDuration);
+			float elapsedTime = 0;
+			Vector3 startRotation = transform.eulerAngles;
+			while (elapsedTime < _jumpDuration)
+			{
+				
+				transform.eulerAngles = Vector3.Lerp(startRotation, _maxRotation, (elapsedTime / _jumpDuration));
+				elapsedTime += Time.deltaTime;
+
+
+				yield return null;
+			}
+			transform.eulerAngles = _maxRotation;
+			Debug.Log(transform.eulerAngles);
 			_fallCoroutine = StartCoroutine(FallCoroutine());
-
-
 		}
 
 		private IEnumerator FallCoroutine()
 		{
+			
 			float elapsedTime = 0;
 			Vector2 startVelocity = _rigidBody.velocity;
+			Vector3 startRotation = transform.eulerAngles;
 			while (elapsedTime < _fallduration)
 			{
 				_rigidBody.velocity = Vector2.Lerp(startVelocity, Vector2.down * _fallSpeed, (elapsedTime / _fallduration));
+				transform.eulerAngles = Vector3.Lerp(startRotation,_minRotation, (elapsedTime / _fallduration));
 				elapsedTime += Time.deltaTime;
+
+
 				yield return null;
 			}
 			_rigidBody.velocity = Vector2.down * _fallSpeed;
+			transform.eulerAngles = _minRotation;
+		}
+
+		public void OnGameOver()
+		{
+			Debug.Log("Death");
+			StopAllCoroutines();
+			_rigidBody.velocity = Vector2.zero;
+			transform.eulerAngles = _maxRotation;
+			_animation.SetClip("Death");
+
+			transform.DOMoveY(transform.position.y + 1f, 0.5f).OnComplete(()=>transform.DOMoveY(transform.position.y - 20f, 2f));
 		}
 
 		private void OnTriggerEnter2D(Collider2D collision)

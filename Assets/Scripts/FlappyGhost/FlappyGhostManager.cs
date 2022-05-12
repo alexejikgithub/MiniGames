@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Minigames.FlappyGhost
 {
@@ -15,7 +16,10 @@ namespace Minigames.FlappyGhost
 		[SerializeField] private Ghost _ghost;
 		[SerializeField] private PipesController _pipesController;
 		[SerializeField] private BackgroundController _backgroundController;
+		[SerializeField] private Text _scoreText;
+		[SerializeField] private InteractableCanvasObject _input;
 
+		private bool _isGameplayOn;
 
 		private int _score;
 
@@ -26,6 +30,7 @@ namespace Minigames.FlappyGhost
 		}
 		private void Start()
 		{
+			_isGameplayOn = true;
 			_pipesController.StartSpawning(_spawnInterval, _movementSpeed, _hightthreshold);
 			_backgroundController.SetBackgroundSpeed(_movementSpeed);
 		}
@@ -33,13 +38,21 @@ namespace Minigames.FlappyGhost
 		private void AddScore()
 		{
 			_score++;
-			Debug.Log(_score);
+			_scoreText.text = _score.ToString();
 		}
 
 		private void GameOver()
 		{
+			if(!_isGameplayOn)
+			{
+				return;
+			}
+			_isGameplayOn = false;
 			_pipesController.StopSpawning();
 			_backgroundController.SetBackgroundSpeed(0f);
+			_input.GameplayInputOff();
+			_ghost.OnGameOver();
+
 		}
 
 		private void OnDestroy()
