@@ -14,24 +14,28 @@ namespace Minigames.FlappyGhost
 		[SerializeField] private Vector3 _maxRotation;
 		[SerializeField] private Vector3 _minRotation;
 		[SerializeField] private Rigidbody2D _rigidBody;
-		[SerializeField] InteractableCanvasObject _input;
+
 		[SerializeField] CustomSpriteAnimation _animation;
+
+		[Header("Sounds")]
+		[SerializeField] private AudioSource _audioSourse;
+		[SerializeField] private AudioClip _jumpSound;
 
 		private Coroutine _jumpCoroutine;
 		private Coroutine _fallCoroutine;
+		private Sequence _deathSequence;
 
 		public Action AddScore;
 		public Action GameOver;
 
 		private void Awake()
 		{
-			_input.OnPointerDownEvent += Jump;
+			
 		}
 
 		private void Start()
 		{
-			_fallCoroutine = StartCoroutine(FallCoroutine());
-			_animation.SetClip("Idle");
+
 
 		}
 		private void Update()
@@ -39,7 +43,22 @@ namespace Minigames.FlappyGhost
 
 
 		}
-		public void Jump(Vector3 position)
+
+		public void StartMovement()
+		{
+			if (_deathSequence != null)
+			{
+				_deathSequence.Kill();
+			}
+			DOTween.Kill(this);
+
+			transform.eulerAngles = new Vector3(0, 0, -1);
+			transform.position = Vector3.zero;
+			_fallCoroutine = StartCoroutine(FallCoroutine());
+			_animation.SetClip("Idle");
+
+		}
+		public void Jump()
 		{
 
 			if (_jumpCoroutine != null)
@@ -47,6 +66,7 @@ namespace Minigames.FlappyGhost
 				StopCoroutine(_jumpCoroutine);
 			}
 			_jumpCoroutine = StartCoroutine(JumpCoroutine());
+			_audioSourse.PlayOneShot(_jumpSound);
 		}
 
 		private IEnumerator JumpCoroutine()
@@ -61,7 +81,7 @@ namespace Minigames.FlappyGhost
 			Vector3 startRotation = transform.eulerAngles;
 			while (elapsedTime < _jumpDuration)
 			{
-				
+
 				transform.eulerAngles = Vector3.Lerp(startRotation, _maxRotation, (elapsedTime / _jumpDuration));
 				elapsedTime += Time.deltaTime;
 
@@ -69,20 +89,20 @@ namespace Minigames.FlappyGhost
 				yield return null;
 			}
 			transform.eulerAngles = _maxRotation;
-			Debug.Log(transform.eulerAngles);
+
 			_fallCoroutine = StartCoroutine(FallCoroutine());
 		}
 
 		private IEnumerator FallCoroutine()
 		{
-			
+
 			float elapsedTime = 0;
 			Vector2 startVelocity = _rigidBody.velocity;
 			Vector3 startRotation = transform.eulerAngles;
 			while (elapsedTime < _fallduration)
 			{
 				_rigidBody.velocity = Vector2.Lerp(startVelocity, Vector2.down * _fallSpeed, (elapsedTime / _fallduration));
-				transform.eulerAngles = Vector3.Lerp(startRotation,_minRotation, (elapsedTime / _fallduration));
+				transform.eulerAngles = Vector3.Lerp(startRotation, _minRotation, (elapsedTime / _fallduration));
 				elapsedTime += Time.deltaTime;
 
 
@@ -94,20 +114,25 @@ namespace Minigames.FlappyGhost
 
 		public void OnGameOver()
 		{
-			Debug.Log("Death");
 			StopAllCoroutines();
 			_rigidBody.velocity = Vector2.zero;
-			transform.eulerAngles = _maxRotation;
+			transform.eulerAngles = Vector3.zero;
 			_animation.SetClip("Death");
 
-			transform.DOMoveY(transform.position.y + 1f, 0.5f).OnComplete(()=>transform.DOMoveY(transform.position.y - 20f, 2f));
+
+			_deathSequence.Kill();
+			_deathSequence = DOTween.Sequence();
+			_deathSequence.Append(transform.DOMoveY(transform.position.y + 1f, 0.5f));
+			_deathSequence.Append(transform.DOMoveY(transform.position.y - 20f, 2f));
+			_deathSequence.Play();
+
 		}
 
 		private void OnTriggerEnter2D(Collider2D collision)
 		{
 
 			ScorePoint scorePoint = collision.GetComponent<ScorePoint>();
-			if(scorePoint != null)
+			if (scorePoint != null)
 			{
 				AddScore.Invoke();
 			}
@@ -121,9 +146,5 @@ namespace Minigames.FlappyGhost
 			}
 		}
 
-		private void OnDestroy()
-		{
-			_input.OnPointerDownEvent -= Jump;
-		}
 	}
 }

@@ -59,6 +59,7 @@ namespace Minigames.FlappyGhost
 		public Transform SpawnTube()
 		{
 			Transform pipe = _pool.GetPooledGameObject().transform;
+			pipe.SetParent(this.transform);
 			PipeComponent pipeComponent = pipe.GetComponent<PipeComponent>();
 
 			if (pipeComponent != null)
@@ -79,6 +80,17 @@ namespace Minigames.FlappyGhost
 			{
 				SpawnTube();
 				yield return new WaitForSeconds(_spawnInterval);
+			}
+		}
+		public void DestroyAllPipes()
+		{
+			foreach (Transform child in transform)
+			{
+				if(child.gameObject.activeSelf)
+				{
+					
+					child.GetComponent<PipeComponent>()?.RemovePipe();
+				}
 			}
 		}
 

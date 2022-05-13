@@ -25,7 +25,7 @@ public class BackgroundPart : MonoBehaviour
 		{
 			LeftEdgePosition = transform.position.x;
 			_anotherBackground.LeftEdgePosition = LeftEdgePosition;
-			Debug.Log(LeftEdgePosition);
+			
 		}
 	}
 
